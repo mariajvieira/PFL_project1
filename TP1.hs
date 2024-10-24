@@ -13,14 +13,18 @@ type Distance = Int
 type RoadMap = [(City,City,Distance)]
 
 cities :: RoadMap -> [City]
-cities = undefined 
-
+cities x = Data.List.nub (map (\(x,y,z) -> x) x ++ map (\(x,y,z) -> y) x)
 
 areAdjacent :: RoadMap -> City -> City -> Bool
 areAdjacent = undefined
 
 distance :: RoadMap -> City -> City -> Maybe Distance
-distance = undefined
+distance [] _ _ = Nothing
+distance ((x,y,dist):rs) c1 c2 
+    |x==c1 && y==c2   = Just dist
+    |x==c2 && y==c1   = Just dist
+    |otherwise        =distance rs c1 c2
+
 
 adjacent :: RoadMap -> City -> [(City,Distance)]
 adjacent = undefined
