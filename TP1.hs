@@ -29,13 +29,18 @@ distance ((x,y,dist):rs) c1 c2
 adjacent :: RoadMap -> City -> [(City,Distance)]
 adjacent = undefined
 
+
 pathDistance :: RoadMap -> Path -> Maybe Distance  
-pathDistance [] _ = Nothing
-pathDistance _ [] = Nothing
-pathDistance _ [n] = Just 0    -- PERGUNTAR AO STOR (SE METER NOTHING, RETORNA SEMPRE NOTHING)
-pathDistance roadmap (p1:p2:ps) =
+pathDistance _ [n] = Nothing
+pathDistance r p = pathDistanceAux r p
+
+pathDistanceAux :: RoadMap -> Path -> Maybe Distance  
+pathDistanceAux [] _ = Nothing
+pathDistanceAux _ [] = Nothing
+pathDistanceAux _ [n] = Just 0
+pathDistanceAux roadmap (p1:p2:ps) =
     case distance roadmap p1 p2 of 
-        Just dist  -> addMaybe (Just dist) (pathDistance roadmap (p2:ps))
+        Just dist  -> addMaybe (Just dist) (pathDistanceAux roadmap (p2:ps))
         Nothing    ->  Nothing
 
 -- Auxiliary function for adding Maybe variables
