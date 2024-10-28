@@ -1,6 +1,7 @@
 import qualified Data.List
 import qualified Data.Array
 import qualified Data.Bits
+import Data.Time.Format.ISO8601 (yearFormat)
 
 -- PFL 2024/2025 Practical assignment 1
 
@@ -16,7 +17,10 @@ cities :: RoadMap -> [City]
 cities x = Data.List.nub (map (\(x,y,z) -> x) x ++ map (\(x,y,z) -> y) x)
 
 areAdjacent :: RoadMap -> City -> City -> Bool
-areAdjacent = undefined
+areAdjacent [] _ _ = False
+areAdjacent ((x,y,_):xs) c1 c2
+    | (x == c1 && y == c2) || (x == c2 && y == c1) = True
+    | otherwise = areAdjacent xs c1 c2
 
 distance :: RoadMap -> City -> City -> Maybe Distance
 distance [] _ _ = Nothing
