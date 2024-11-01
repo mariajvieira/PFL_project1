@@ -1,7 +1,6 @@
 import qualified Data.List
 import qualified Data.Array
 import qualified Data.Bits
-import Data.Time.Format.ISO8601 (yearFormat)
 
 -- PFL 2024/2025 Practical assignment 1
 
@@ -30,9 +29,8 @@ distance ((x,y,dist):rs) c1 c2
     |otherwise        =distance rs c1 c2
 
 
-adjacent :: RoadMap -> City -> [(City,Distance)]
-adjacent = undefined
-
+adjacent :: RoadMap -> City -> [(City, Distance)]
+adjacent roadmap city = [(y, dist) | (x, y, dist) <- roadmap, x == city] ++ [(x, dist) | (x, y, dist) <- roadmap, y == city]
 
 pathDistance :: RoadMap -> Path -> Maybe Distance  
 pathDistance _ [n] = Nothing
@@ -56,8 +54,24 @@ addMaybe _ _ = Nothing
 rome :: RoadMap -> [City]
 rome = undefined
 
+
+dfs :: RoadMap -> City -> [City] -> [City]
+dfs _ city visited | city `elem` visited = visited
+dfs roadmap city visited =
+    let newVisited = city : visited
+        neighbors = map fst (adjacent roadmap city)
+    in foldl (\acc nextCity -> dfs roadmap nextCity acc) newVisited neighbors
+
+
 isStronglyConnected :: RoadMap -> Bool
-isStronglyConnected = undefined
+isStronglyConnected roadmap = all reachableFrom allCities
+  where
+    allCities = cities roadmap
+    reachableFrom city = 
+        let visited = dfs roadmap city [] 
+        in length visited == length allCities
+
+
 
 shortestPath :: RoadMap -> City -> City -> [Path]
 shortestPath = undefined
@@ -77,3 +91,6 @@ gTest2 = [("0","1",10),("0","2",15),("0","3",20),("1","2",35),("1","3",25),("2",
 
 gTest3 :: RoadMap -- unconnected graph
 gTest3 = [("0","1",4),("2","3",2)]
+
+roadmapExemplo2 :: RoadMap
+roadmapExemplo2 = [("Porto", "Lisboa", 300), ("Lisboa", "Coimbra", 200), ("Porto", "Braga", 50)]
