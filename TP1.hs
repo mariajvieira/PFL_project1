@@ -52,7 +52,11 @@ addMaybe _ _ = Nothing
 
 
 rome :: RoadMap -> [City]
-rome = undefined
+rome roadmap = [x | x <- allCities, numRoads x ==  highestNumRoads]
+    where
+        allCities = cities roadmap
+        numRoads x = length(adjacent roadmap x)
+        highestNumRoads = maximum (map numRoads allCities)
 
 
 dfs :: RoadMap -> City -> [City] -> [City]
