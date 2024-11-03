@@ -76,9 +76,28 @@ isStronglyConnected roadmap = all reachableFrom allCities
         in length visited == length allCities
 
 
-
 shortestPath :: RoadMap -> City -> City -> [Path]
-shortestPath = undefined
+shortestPath roadmap c1 c2 
+    | c1 == c2 = [[c1]] 
+    | otherwise = 
+        let allPaths = bfs roadmap c1 c2 
+            distances = [(path, pathDistance roadmap path) | path <- allPaths]
+            minDistance = minimum [d | (_, Just d) <- distances, d >= 0] 
+        in [path | (path, Just dist) <- distances, dist == minDistance] 
+
+
+bfs :: RoadMap -> City -> City -> [Path]
+bfs roadmap c1 c2 = bfsHelper [(c1, [c1])] 
+  where
+    bfsHelper :: [(City, Path)] -> [Path]
+    bfsHelper [] = [] 
+    bfsHelper ((current, path):rest)
+        | current == c2 = path : bfsHelper rest 
+        | otherwise = bfsHelper (rest ++ nextPaths) 
+      where
+        nextPaths = [(nextCity, path ++ [nextCity]) |
+                     (nextCity, _) <- adjacent roadmap current,
+                     not (nextCity `elem` path)] 
 
 travelSales :: RoadMap -> Path
 travelSales = undefined
